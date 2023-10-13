@@ -1,5 +1,5 @@
 # dummy_unistd_for_GCC-RX
-Dummy unistd function for GCC-RX
+Dummy unistd function for GCC-RX + newlib
 
 I want to remove these warning messages.
 
@@ -21,3 +21,6 @@ c:/programdata/gcc for renesas rx 8.3.0.202202-gnurx-elf/rx-elf/rx-elf/bin/../li
 c:/programdata/gcc for renesas rx 8.3.0.202202-gnurx-elf/rx-elf/rx-elf/bin/../lib/gcc/rx-elf/8.3.0.202202-GNURX/../../../../rx-elf/bin/ld.exe: c:/programdata/gcc for renesas rx 8.3.0.202202-gnurx-elf/rx-elf/rx-elf/bin/../lib/gcc/rx-elf/8.3.0.202202-GNURX/../../../../rx-elf/lib/rxv3\libc.a(lib_a-writer.o): in function `_write_r':
 (.text._write_r+0x14): warning: _write is not implemented and will always fail
 ```
+
+## Usage
+Copy dummy_unistd.{c,h} to e2studio project directory.
