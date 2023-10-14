@@ -209,7 +209,7 @@ int kill(pid_t pid, int sig)
         return -1;
     }
     if (pid <= 0) {
-        if (now_pid >= PROCESS_ID_NUM) {
+        if ((unsigned int)now_pid >= PROCESS_ID_NUM) {
             return -1;
         }
         i = (unsigned int)now_pid;
