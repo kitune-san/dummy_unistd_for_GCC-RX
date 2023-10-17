@@ -26,6 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "dummy_unistd.h"
+#include <errno.h>
 
 static file_control_functions_t file_control_functions_list[FILE_DESCRIPTOR_NUM] = {NULL};
 
@@ -57,9 +58,11 @@ int close(int fd)
 {
     unsigned int ufd = (unsigned int)fd;
     if (ufd >= FILE_DESCRIPTOR_NUM) {
+        errno = EBADF;
         return -1;
     }
     if (file_control_functions_list[fd].close_func == NULL) {
+        errno = EBADF;
         return -1;
     }
     return file_control_functions_list[fd].close_func(fd);
@@ -75,9 +78,11 @@ int fstat(int fd, struct stat *buf)
 {
     unsigned int ufd = (unsigned int)fd;
     if (ufd >= FILE_DESCRIPTOR_NUM) {
+        errno = EBADF;
         return -1;
     }
     if (file_control_functions_list[fd].fstat_func == NULL) {
+        errno = EBADF;
         return -1;
     }
     return file_control_functions_list[fd].fstat_func(fd, buf);
@@ -92,9 +97,11 @@ int isatty(int fd)
 {
     unsigned int ufd = (unsigned int)fd;
     if (ufd >= FILE_DESCRIPTOR_NUM) {
+        errno = EBADF;
         return -1;
     }
     if (file_control_functions_list[fd].isatty_func == NULL) {
+        errno = EBADF;
         return -1;
     }
     return file_control_functions_list[fd].isatty_func(fd);
@@ -111,9 +118,11 @@ off_t lseek(int fd, off_t offset, int whence)
 {
     unsigned int ufd = (unsigned int)fd;
     if (ufd >= FILE_DESCRIPTOR_NUM) {
+        errno = EBADF;
         return -1;
     }
     if (file_control_functions_list[fd].lseek_func == NULL) {
+        errno = EBADF;
         return -1;
     }
     return file_control_functions_list[fd].lseek_func(fd, offset, whence);
@@ -130,10 +139,12 @@ int read(int fd, void *buf, size_t count)
 {
     unsigned int ufd = (unsigned int)fd;
     if (ufd >= FILE_DESCRIPTOR_NUM) {
-        return 0;
+        errno = EBADF;
+        return -1;
     }
     if (file_control_functions_list[fd].read_func == NULL) {
-        return 0;
+        errno = EBADF;
+        return -1;
     }
     return file_control_functions_list[fd].read_func(fd, buf, count);
 }
@@ -149,9 +160,11 @@ int write(int fd, const void *buf, size_t count)
 {
     unsigned int ufd = (unsigned int)fd;
     if (ufd >= FILE_DESCRIPTOR_NUM) {
+        errno = EBADF;
         return -1;
     }
     if (file_control_functions_list[fd].write_func == NULL) {
+        errno = EBADF;
         return -1;
     }
     return file_control_functions_list[fd].write_func(fd, buf, count);
@@ -206,15 +219,18 @@ int kill(pid_t pid, int sig)
     unsigned int i = (unsigned int)pid;
 
     if (pid >= PROCESS_ID_NUM) {
+        errno = ESRCH;
         return -1;
     }
     if (pid <= 0) {
         if ((unsigned int)now_pid >= PROCESS_ID_NUM) {
+            errno = ESRCH;
             return -1;
         }
         i = (unsigned int)now_pid;
     }
     if (kill_func_list[i] == NULL) {
+        errno = ESRCH;
         return -1;
     }
     return kill_func_list[i](pid, sig);
